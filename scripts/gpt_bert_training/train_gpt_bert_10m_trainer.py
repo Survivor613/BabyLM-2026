@@ -20,6 +20,12 @@ from torch.nn.parallel import DistributedDataParallel
 from torch.utils.data import DataLoader, Dataset
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 
+try:
+    from muon import MuonWithAuxAdam, SingleDeviceMuonWithAuxAdam
+except ImportError:
+    MuonWithAuxAdam = None
+    SingleDeviceMuonWithAuxAdam = None
+
 
 def find_repo_root(start: Path) -> Path:
     for path in [start, *start.parents]:
@@ -455,6 +461,61 @@ def build_model(config_path: Path, device: torch.device) -> GPTBERTForCausalLM:
 
 
 def build_optimizer(model: nn.Module, args: argparse.Namespace) -> torch.optim.Optimizer:
+    if args.optimizer == "muon":
+        if MuonWithAuxAdam is None or SingleDeviceMuonWithAuxAdam is None:
+            raise ImportError(
+                "optimizer: muon requires the official KellerJordan/Muon package. "
+                "Install it with: pip install git+https://github.com/KellerJordan/Muon"
+            )
+        muon_params = []
+        aux_decay_params = []
+        aux_no_decay_params = []
+        for name, param in model.named_parameters():
+            if not param.requires_grad:
+                continue
+            is_aux = (
+                param.ndim != 2
+                or "embedding" in name
+                or "lm_head" in name
+                or "layer_norm" in name
+                or name.endswith(".bias")
+            )
+            if not is_aux:
+                muon_params.append(param)
+            elif param.ndim == 1 or name.endswith(".bias") or "layer_norm" in name:
+                aux_no_decay_params.append(param)
+            else:
+                aux_decay_params.append(param)
+
+        grouped = [
+            {
+                "params": muon_params,
+                "use_muon": True,
+                "lr": args.muon_learning_rate,
+                "momentum": args.muon_momentum,
+                "weight_decay": args.weight_decay,
+            },
+            {
+                "params": aux_decay_params,
+                "use_muon": False,
+                "lr": args.muon_aux_learning_rate,
+                "betas": (args.optimizer_beta1, args.optimizer_beta2),
+                "eps": args.optimizer_eps,
+                "weight_decay": args.weight_decay,
+            },
+            {
+                "params": aux_no_decay_params,
+                "use_muon": False,
+                "lr": args.muon_aux_learning_rate,
+                "betas": (args.optimizer_beta1, args.optimizer_beta2),
+                "eps": args.optimizer_eps,
+                "weight_decay": 0.0,
+            },
+        ]
+        if dist.is_available() and dist.is_initialized():
+            return MuonWithAuxAdam(grouped)
+        return SingleDeviceMuonWithAuxAdam(grouped)
+
     no_decay = ["bias", "layer_norm"]
     decay_params = []
     no_decay_params = []
@@ -648,6 +709,9 @@ DEFAULT_TRAIN_CONFIG: dict[str, Any] = {
     "hybrid_denominator": 16,
     "learning_rate": 1.41e-2,
     "optimizer": "lamb",
+    "muon_learning_rate": 0.02,
+    "muon_aux_learning_rate": 3e-4,
+    "muon_momentum": 0.95,
     "weight_decay": 0.1,
     "optimizer_eps": 1e-8,
     "optimizer_beta1": 0.9,
