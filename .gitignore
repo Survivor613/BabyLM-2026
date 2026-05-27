@@ -1,0 +1,62 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Environments and local secrets
+.env
+.venv/
+venv/
+conda-meta/
+
+# Local training data and checkpoints
+data/
+checkpoints/
+models/
+logs/
+runs/
+wandb/
+outputs/
+
+# Model/checkpoint artifacts
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+
+# Keep babylm-eval source code, ignore its nested git metadata and generated files
+reference/babylm-eval/.git/
+reference/babylm-eval/**/__pycache__/
+reference/babylm-eval/**/.cache/
+reference/babylm-eval/strict/.cache/
+reference/babylm-eval/strict/results/
+reference/babylm-eval/strict/models/
+reference/babylm-eval/strict/evaluation_data/
+reference/babylm-eval/multilingual/finetune/results/
+reference/babylm-eval/multilingual/results/
+
+# Other external reference repositories kept out of this project repo
+reference/BabyLM-Leaderboard-2026/
+reference/babylm26-nlp-spring/
+reference/gpt-bert-official/
+
+# Downloaded archives and generated documents
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.pdf
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.code-workspace

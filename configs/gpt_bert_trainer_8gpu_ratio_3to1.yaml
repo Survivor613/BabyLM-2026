@@ -1,0 +1,45 @@
+# Paths are resolved relative to the repository root unless absolute.
+data_dir: data/babylm26_eng_clean
+source_model_dir: tokenizers/hf_10m_gpt_bert_mixed
+config: configs/gpt_bert_small_16k.json
+output_dir: /home/babylm26_g2/data/BabyLM/checkpoints/gpt-bert/gpt-bert-10m-ratio_3to1_33m_parameter
+name: gpt_bert_10m_ratio_3to1_33m
+resume_from_checkpoint:
+
+epochs: 10
+seq_len: 128
+max_steps:
+max_lines_per_file:
+
+# 3:1 means 3/4 BERT rows and 1/4 GPT rows.
+hybrid_numerator: 3
+hybrid_denominator: 4
+
+batch_size: 32
+global_batch_size: 32768
+batch_reduction: 4
+learning_rate: 0.0141
+optimizer: lamb
+weight_decay: 0.1
+optimizer_eps: 1.0e-8
+optimizer_beta1: 0.9
+optimizer_beta2: 0.98
+warmup_proportion: 0.016
+cooldown_proportion: 0.016
+lr_min_factor: 0.1
+ema_decay: 0.999
+max_gradient: 2.0
+z_loss_weight: 1.0e-4
+
+mask_p_start: 0.3
+mask_p_end: 0.15
+mask_random_p: 0.1
+mask_keep_p: 0.1
+n_special_tokens: 16
+
+mixed_precision: true
+num_workers: 0
+save_every: 1000
+save_hf_eval_dir: true
+log_every: 100
+seed: 42
