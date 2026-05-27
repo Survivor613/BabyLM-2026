@@ -7,7 +7,7 @@
 | `gpt_bert_10m_official_33m` | `configs/gpt_bert_trainer_8gpu.yaml` | `/home/babylm26_g2/data/BabyLM/checkpoints/gpt-bert/gpt-bert-10m-official_33m_parameter` | 15/16 BERT, 1/16 GPT | `tokenizers/hf_10m_gpt_bert_mixed` | `configs/gpt_bert_small_16k.json` | 33,046,084 | 0.0141 | 10 | 3940 | trained, eval e10 done |
 | `gpt_bert_10m_ratio_3to1_33m` | `configs/gpt_bert_trainer_8gpu_ratio_3to1.yaml` | `/home/babylm26_g2/data/BabyLM/checkpoints/gpt-bert/gpt-bert-10m-ratio_3to1_33m_parameter` | 3/4 BERT, 1/4 GPT | `tokenizers/hf_10m_gpt_bert_mixed` | `configs/gpt_bert_small_16k.json` | 33,046,084 | 0.0141 | 10 | TBD | planned |
 | `gpt_bert_10m_ratio_1to1_33m` | `configs/gpt_bert_trainer_8gpu_ratio_1to1.yaml` | `/home/babylm26_g2/data/BabyLM/checkpoints/gpt-bert/gpt-bert-10m-ratio_1to1_33m_parameter` | 1/2 BERT, 1/2 GPT | `tokenizers/hf_10m_gpt_bert_mixed` | `configs/gpt_bert_small_16k.json` | 33,046,084 | 0.0141 | 10 | 3970 | trained, eval e10_ratio_1to1 done |
-| `gpt_bert_10m_ratio_1to1_33m_muon` | `configs/gpt_bert_trainer_8gpu_ratio_1to1_muon.yaml` | `/home/babylm26_g2/data/BabyLM/checkpoints/gpt-bert/gpt-bert-10m-ratio_1to1_33m_muon` | 1/2 BERT, 1/2 GPT | `tokenizers/hf_10m_gpt_bert_mixed` | `configs/gpt_bert_small_16k.json` | 33,046,084 | Muon 0.02 / AdamW 3e-4 | 10 | TBD | planned |
+| `gpt_bert_10m_ratio_1to1_33m_muon` | `configs/gpt_bert_trainer_8gpu_ratio_1to1_muon.yaml` | `/home/babylm26_g2/data/BabyLM/checkpoints/gpt-bert/gpt-bert-10m-ratio_1to1_33m_muon` | 1/2 BERT, 1/2 GPT | `tokenizers/hf_10m_gpt_bert_mixed` | `configs/gpt_bert_small_16k.json` | 33,046,084 | Muon 0.02 / AdamW 3e-4 | 10 | 3970 | trained, eval e10_ratio_1to1_muon done |
 | `gpt_bert_10m_ratio_1to3_33m` | `configs/gpt_bert_trainer_8gpu_ratio_1to3.yaml` | `/home/babylm26_g2/data/BabyLM/checkpoints/gpt-bert/gpt-bert-10m-ratio_1to3_33m_parameter` | 1/4 BERT, 3/4 GPT | `tokenizers/hf_10m_gpt_bert_mixed` | `configs/gpt_bert_small_16k.json` | 33,046,084 | 0.0141 | 10 | 3970 | trained, eval e10_ratio_1to3 done |
 
 ## Training Curve: `gpt_bert_10m_official_33m`
@@ -125,5 +125,43 @@ Revision: `e10_ratio_1to3`; backend: `causal`
 | `zero_shot/blimp/supplement_filtered` | 53.85 | 56.00 | -2.15 | 54.42 | -0.57 | 65.00 | -11.15 | 57.25 | -3.40 |
 | `zero_shot/comps/comps` | 52.51 | 51.34 | +1.17 | 50.69 | +1.82 | 55.85 | -3.34 | 51.81 | +0.70 |
 | `zero_shot/entity_tracking/entity_tracking` | 31.28 | 37.38 | -6.10 | 33.01 | -1.73 | 23.58 | +7.70 | 21.07 | +10.21 |
+
+## Training Curve: `gpt_bert_10m_ratio_1to1_33m_muon`
+
+Optimizer: official `MuonWithAuxAdam`; Muon LR `0.02`; auxiliary AdamW LR `3e-4`; momentum `0.95`.
+
+| Epoch | Step | Checkpoint stem | Loss | Acc | BERT loss | GPT loss | Grad norm | Mask p | LR |
+| ---: | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | 398 | `gpt_bert_10m_ratio_1to1_33m_muon_step000398_epoch01` | 4.9307 | 24.62 | 4.9512 | 4.9103 | 0.4778 | 0.1652 | 0.0198371 |
+| 2 | 796 | `gpt_bert_10m_ratio_1to1_33m_muon_step000796_epoch02` | 4.5674 | 26.46 | 4.5215 | 4.6133 | 0.3740 | 0.1583 | 0.0188450 |
+| 3 | 1000 | `gpt_bert_10m_ratio_1to1_33m_muon_step001000_epoch03` | 4.4462 | 27.13 | 4.3945 | 4.4979 | 0.4360 | 0.1550 | 0.0175641 |
+| 3 | 1193 | `gpt_bert_10m_ratio_1to1_33m_muon_step001193_epoch03` | 4.3647 | 29.16 | 4.2837 | 4.4457 | 0.4090 | 0.1512 | 0.0170483 |
+| 4 | 1590 | `gpt_bert_10m_ratio_1to1_33m_muon_step001590_epoch04` | 4.2342 | 30.27 | 4.1853 | 4.2832 | 0.4117 | 0.1449 | 0.0146313 |
+| 5 | 1988 | `gpt_bert_10m_ratio_1to1_33m_muon_step001988_epoch05` | 4.1699 | 30.48 | 4.1142 | 4.2256 | 0.4328 | 0.1375 | 0.0118419 |
+| 6 | 2000 | `gpt_bert_10m_ratio_1to1_33m_muon_step002000_epoch06` | 3.9624 | 32.53 | 3.8041 | 4.1207 | 0.4390 | 0.1284 | 0.0111194 |
+| 6 | 2384 | `gpt_bert_10m_ratio_1to1_33m_muon_step002384_epoch06` | 4.0018 | 32.48 | 3.8450 | 4.1585 | 0.4611 | 0.1293 | 0.00896608 |
+| 7 | 2780 | `gpt_bert_10m_ratio_1to1_33m_muon_step002780_epoch07` | 3.8824 | 33.50 | 3.6835 | 4.0813 | 0.5255 | 0.1231 | 0.00629890 |
+| 8 | 3000 | `gpt_bert_10m_ratio_1to1_33m_muon_step003000_epoch08` | 3.8764 | 34.11 | 3.6985 | 4.0543 | 0.5494 | 0.1138 | 0.00460159 |
+| 8 | 3178 | `gpt_bert_10m_ratio_1to1_33m_muon_step003178_epoch08` | 3.7625 | 36.06 | 3.6014 | 3.9235 | 0.5163 | 0.1144 | 0.00411388 |
+| 9 | 3575 | `gpt_bert_10m_ratio_1to1_33m_muon_step003575_epoch09` | 3.6912 | 35.59 | 3.4828 | 3.8995 | 0.5597 | 0.1074 | 0.00263511 |
+| 10 | 3970 | `gpt_bert_10m_ratio_1to1_33m_muon_step003970_epoch10` | 3.6230 | 37.27 | 3.4132 | 3.8328 | 0.5911 | 0.0991 | 0.00201425 |
+
+Best logged point before checkpoint save:
+
+| Epoch | Step | Loss | Acc | BERT loss | GPT loss | Mask p | LR |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 9 | 3400 | 3.6291 | 36.30 | 3.4084 | 3.8498 | 0.1081 | 0.00292888 |
+
+## Zero-Shot Eval: `gpt_bert_10m_ratio_1to1_33m_muon`
+
+Checkpoint: `gpt_bert_10m_ratio_1to1_33m_muon_step003970_epoch10-hf`  
+Revision: `e10_ratio_1to1_muon`; backend: `causal`
+
+| Task | This run | 1:1 LAMB | Diff vs 1:1 LAMB | 1:3 LAMB | Diff vs 1:3 LAMB | GPT-2 Strict baseline | Diff vs Strict | GPT-2 Strict-Small baseline | Diff vs Strict-Small |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| `zero_shot/blimp/blimp_filtered` | 69.38 | 64.47 | +4.91 | 68.13 | +1.25 | 74.53 | -5.15 | 65.08 | +4.30 |
+| `zero_shot/blimp/supplement_filtered` | 54.56 | 56.00 | -1.44 | 53.85 | +0.71 | 65.00 | -10.44 | 57.25 | -2.69 |
+| `zero_shot/comps/comps` | 51.29 | 51.34 | -0.05 | 52.51 | -1.22 | 55.85 | -4.56 | 51.81 | -0.52 |
+| `zero_shot/entity_tracking/entity_tracking` | 17.31 | 37.38 | -20.07 | 31.28 | -13.97 | 23.58 | -6.27 | 21.07 | -3.76 |
 
 Legacy note: the first training run originally used checkpoint stems beginning with `gpt_bert_10m_official_8gpu`; after renaming, future runs should use the YAML `name` value `gpt_bert_10m_official_33m`.
